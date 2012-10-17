@@ -80,10 +80,4 @@
 	[imageView setFrame:newFrame];
 }
 
-- (void)dealloc {
-	[imageView release];
-	
-	[super dealloc];
-}
-
 @end

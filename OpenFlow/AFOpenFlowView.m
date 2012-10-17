@@ -85,7 +85,7 @@ const static CGFloat kReflectionFraction = 0.85;
 - (AFItemView *)coverForIndex:(int)coverIndex {
 	AFItemView *coverView = [self dequeueReusableCover];
 	if (!coverView)
-		coverView = [[[AFItemView alloc] initWithFrame:CGRectZero] autorelease];
+		coverView = [[AFItemView alloc] initWithFrame:CGRectZero];
 	
 	coverView.number = coverIndex;
 	
@@ -108,7 +108,6 @@ const static CGFloat kReflectionFraction = 0.85;
 - (AFItemView *)dequeueReusableCover {
 	AFItemView *aCover = [offscreenCovers anyObject];
 	if (aCover) {
-		[[aCover retain] autorelease];
 		[offscreenCovers removeObject:aCover];
 	}
 	return aCover;
@@ -154,7 +153,6 @@ const static CGFloat kReflectionFraction = 0.85;
 	for (int i = lowerBound; i <= upperBound; i++) {
 		coverNumber = [[NSNumber alloc] initWithInt:i];
 		cover = (AFItemView *)[onscreenCovers objectForKey:coverNumber];
-		[coverNumber release];
 		[self layoutCover:cover selectedCover:selected animated:YES];
 	}
 }
@@ -173,7 +171,10 @@ const static CGFloat kReflectionFraction = 0.85;
 
 
 @implementation AFOpenFlowView
-@synthesize dataSource, viewDelegate, numberOfImages, defaultImage;
+@synthesize dataSource = _dataSource;
+@synthesize viewDelegate = _afViewDelegate;
+@synthesize numberOfImages = _numberOfImages;
+@synthesize defaultImage = _defaultImage;
 
 #define COVER_BUFFER 6
 
@@ -187,21 +188,6 @@ const static CGFloat kReflectionFraction = 0.85;
 	}
 	
 	return self;
-}
-
-- (void)dealloc {
-	[defaultImage release];
-	[scrollView release];
-	
-	[coverImages release];
-	[coverImageHeights release];
-	[offscreenCovers removeAllObjects];
-	[offscreenCovers release];
-	
-	[onscreenCovers removeAllObjects];
-	[onscreenCovers release];
-	
-	[super dealloc];
 }
 
 - (void)setBounds:(CGRect)newSize {
@@ -233,9 +219,8 @@ const static CGFloat kReflectionFraction = 0.85;
 }
 
 - (void)setDefaultImage:(UIImage *)newDefaultImage {
-	[defaultImage release];
 	defaultImageHeight = newDefaultImage.size.height;
-	defaultImage = [[newDefaultImage addImageReflection:kReflectionFraction] retain];
+	defaultImage = [newDefaultImage addImageReflection:kReflectionFraction];
 }
 
 - (void)setImage:(UIImage *)image forIndex:(int)index {
